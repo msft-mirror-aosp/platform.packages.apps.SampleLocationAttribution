@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -90,9 +89,18 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
+                if (isLocationPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    if (!isLocationPermissionGranted(
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                        // Request 'Allow all the time' permission if the user didn't select
+                        // 'Don't ask again' option earlier.
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                            showRequestBackgroundLocationPermissionDialog();
+                            return;
+                        }
+                    }
+
                     // We can't show tri-state dialog when permission is already granted.
                     // So, go to the location permission settings screen directly.
                     showLocationPermissionSettingsDashboard();
@@ -118,9 +126,21 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private boolean isLocationPermissionGranted(String locationPermissionType) {
+        return ActivityCompat.checkSelfPermission(this, locationPermissionType)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
     private void showRequestLocationPermissionDialog() {
         ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                NON_FRAMEWORK_LOCATION_PERMISSION);
+    }
+
+    private void showRequestBackgroundLocationPermissionDialog() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                 NON_FRAMEWORK_LOCATION_PERMISSION);
     }
 
