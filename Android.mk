@@ -15,7 +15,6 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
 LOCAL_SDK_VERSION := current
 
-LOCAL_PRIVILEGED_MODULE := true
 LOCAL_PRODUCT_MODULE := true
 
 # Name of the APK to build
