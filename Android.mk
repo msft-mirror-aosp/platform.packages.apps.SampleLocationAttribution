@@ -19,6 +19,8 @@ LOCAL_PRODUCT_MODULE := true
 
 # Name of the APK to build
 LOCAL_PACKAGE_NAME := SampleLocationAttribution
+LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
+LOCAL_LICENSE_CONDITIONS := notice
 
 # Tell it to build an APK
 include $(BUILD_PACKAGE)
